@@ -35,9 +35,17 @@ public struct InfiniteCalendar<View: CellableView, Cell: ViewHostingCell<View>, 
     }
 
     public func updateUIViewController(_ icViewController: ICViewController<View, Cell, Settings>, context: Context) {
-        icViewController.updateCalendar(events: events, settings: settings, didTapToday: didTapToday)
-        DispatchQueue.main.async {
-            if didTapToday { didTapToday = false }
+        if settings.preNumOfDays != settings.numOfDays {
+            icViewController.setupCalendarView(events: events, settings: settings)
+            icViewController.setDelegate(context.coordinator.delegate)
+            DispatchQueue.main.async {
+                settings.preNumOfDays = settings.numOfDays
+            }
+        } else {
+            icViewController.updateCalendar(events: events, settings: settings, didTapToday: didTapToday)
+            DispatchQueue.main.async {
+                if didTapToday { didTapToday = false }
+            }
         }
     }
     

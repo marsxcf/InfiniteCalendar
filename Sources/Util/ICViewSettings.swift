@@ -38,6 +38,7 @@ public protocol ICSettings: ObservableObject {
     var timeRange: (startTime: Int, endTime: Int) { get set }
     var withVibrateFeedback: Bool { get set }
     var datePosition: ICViewUI.DatePosition { get set }
+    var preNumOfDays: Int { get set }
     
     /* TODO: for future
      var viewType: ViewType
@@ -53,6 +54,8 @@ public protocol ICSettings: ObservableObject {
 // * If want to use custom components, create subclass and define new class to each typealias. *
 // DON'T ADD new property to subclass, it wont be used.
 open class ICViewSettings: ICSettings {
+    public var preNumOfDays: Int = 1
+    
     @Published public var numOfDays: Int = 1
     @Published public var initDate: Date = Date()
     @Published public var scrollType: ScrollType = .pageScroll

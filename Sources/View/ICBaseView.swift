@@ -85,6 +85,8 @@ open class ICBaseView<View: CellableView, Cell: ViewHostingCell<View>, Settings:
     }
     private var currentTappedPage: Int?
     
+    private var isIniting: Bool = true;
+    
     
     public init(parentViewController: UIViewController) {
         super.init(frame: parentViewController.view.bounds)
@@ -135,7 +137,7 @@ open class ICBaseView<View: CellableView, Cell: ViewHostingCell<View>, Settings:
         collectionView.bounces = true
         collectionView.showsVerticalScrollIndicator = true
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.backgroundColor = .white
+//        collectionView.backgroundColor = .white
         addSubview(collectionView)
         collectionView.setAnchorConstraintsFullSizeTo(view: self)
         
@@ -176,6 +178,7 @@ open class ICBaseView<View: CellableView, Cell: ViewHostingCell<View>, Settings:
     
     public func resetCurrentDate() {
         let date = layout.date(forContentOffset: collectionView.contentOffset)
+//        print("6 \(date)")
         if currentDate != date {
             currentDate = date
         }
@@ -271,6 +274,11 @@ open class ICBaseView<View: CellableView, Cell: ViewHostingCell<View>, Settings:
             let middlePage: Int = Int(preparePages/2)
             let middlePageOffsetX: CGFloat = self.contentViewWidth*CGFloat(middlePage)
             self.collectionView.contentOffset.x += middlePageOffsetX
+//            print("2 \(collectionView.contentOffset.x) - \(collectionView.contentOffset.y)")
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.isIniting = false
         }
     }
 
@@ -289,7 +297,7 @@ open class ICBaseView<View: CellableView, Cell: ViewHostingCell<View>, Settings:
         guard let sectionWidth = layout.sectionWidth else { return }
         
         initDate = initDateForCollectionView(date)
-        let fixedDate: Date = getFirstDayOfWeek(setDate: date.startOfDay, firstDayOfWeek: .Sunday)
+        let fixedDate: Date = date.startOfDay //getFirstDayOfWeek(setDate: date.startOfDay, firstDayOfWeek: .Monday)
         let section = Date.daysBetween(start: initDate, end: fixedDate, ignoreHours: true)
         
         let offsetY = layout.offset(forCurrentTimeline: collectionView).y
@@ -371,6 +379,9 @@ open class ICBaseView<View: CellableView, Cell: ViewHostingCell<View>, Settings:
     }
     
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if isIniting {
+            return
+        }
         if scrollDirection == nil { scrollDirection = getBegginDraggingScrollDirection() }
         
         switch scrollDirection?.direction {
@@ -381,16 +392,22 @@ open class ICBaseView<View: CellableView, Cell: ViewHostingCell<View>, Settings:
         default: break
         }
 
+//        print("1 \(collectionView.contentOffset.x) - \(collectionView.contentOffset.y)")
+        
         // When scrolling over than range of visible view, update initDate
         if !getScrollableRange().contains(scrollView.contentOffset.x) {
             forceReload()
         }
+        
+//        print("2 \(collectionView.contentOffset.x) - \(collectionView.contentOffset.y)")
 
         // When layout.sectionWidth is nil, ignore updateAllDayBar
         guard layout.sectionWidth != nil else { return }
 
         // TODO: checkScrollableRange()
         updateAllDayBar(isScrolling: true, isExpended: dataSource?.isAllHeaderExpended ?? false)
+        
+//        print("3 \(collectionView.contentOffset.x) - \(collectionView.contentOffset.y)")
         resetCurrentDate()
     }
     
@@ -467,7 +484,7 @@ open class ICBaseView<View: CellableView, Cell: ViewHostingCell<View>, Settings:
     public func collectionView(_ collectionView: UICollectionView, layout: ICViewFlowLayout<Settings>, startTimeForItemAtIndexPath indexPath: IndexPath) -> Date {
         let date = layout.date(forDateHeaderAt: indexPath)
         
-        if let events = events[date] {
+        if let events = events[date], indexPath.item < events.count {
             return events[indexPath.item].intraStartDate
         } else {
             print("Connot get events at \(date)")
@@ -478,7 +495,7 @@ open class ICBaseView<View: CellableView, Cell: ViewHostingCell<View>, Settings:
     public func collectionView(_ collectionView: UICollectionView, layout: ICViewFlowLayout<Settings>, endTimeForItemAtIndexPath indexPath: IndexPath) -> Date {
         let date = layout.date(forDateHeaderAt: indexPath)
         
-        if let events = events[date] {
+        if let events = events[date], indexPath.item < events.count {
             return events[indexPath.item].intraEndDate
         } else {
             print("Connot get events at \(date)")
@@ -499,10 +516,16 @@ extension ICBaseView {
     }
     
     public func initDateForCollectionView(_ date: Date) -> Date {
+//        if settings.numOfDays == 1 {
+//            return Date().startOfDay
+//        } else if settings.numOfDays == 3 {
+//            return Date().add(component: .day, value: -2).startOfDay
+//        }
+//        return Date().add(component: .day, value: -6).startOfDay
         var _date = date
-        if settings.numOfDays == 7 {
-            _date = getFirstDayOfWeek(setDate: settings.initDate, firstDayOfWeek: .Sunday)
-        }
+//        if settings.numOfDays == 7 {
+//            return _date.startOfDay.add(component: .day, value: -settings.numOfDays * (preparePages/2) - 1)
+//        }
         return _date.startOfDay.add(component: .day, value: -settings.numOfDays * (preparePages/2))
     }
     

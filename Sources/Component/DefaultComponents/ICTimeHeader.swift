@@ -25,7 +25,7 @@ public extension ICDefaultComponent {
             HStack {
                 Text("\(item.date.hour):\(String(format: "%02d", item.date.minute))")
                     .font(.system(size: 12))
-                    .foregroundColor(item.isHighlighted ? .blue : Color.black.opacity(0.6))
+                    .foregroundColor(item.isHighlighted ? .blue : Color("Text").opacity(0.6))
                 Spacer().frame(width: 8.0)
                 Rectangle()
                     .foregroundColor(Color.gray.opacity(0.3))
@@ -62,7 +62,7 @@ public extension ICDefaultComponent {
                 item.color
                 Rectangle()
                     .frame(width: 0.5)
-                    .foregroundColor(Color.gray.opacity(0.3))
+                    .foregroundColor(Color.gray.opacity(0))
             }
         }
     }

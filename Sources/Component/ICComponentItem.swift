@@ -85,7 +85,7 @@ public struct ICTimelineItem: ICComponent {
 
 // MARK: Background
 public struct ICContentBackgroundItem: ICComponent {
-    public var color: Color = .white
+    public var color: Color = Color("Background")
     
     public init() {}
     

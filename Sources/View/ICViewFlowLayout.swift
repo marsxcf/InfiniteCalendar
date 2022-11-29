@@ -642,6 +642,8 @@ open class ICViewFlowLayout<Settings: ICSettings>: UICollectionViewFlowLayout {
     open func date(forContentOffset contentOffset: CGPoint) -> Date {
         let adjustedX = contentOffset.x + sectionWidth/2 - contentsMargin.left
         let section = Int(adjustedX / sectionWidth)
+//        print("4 \(contentOffset.x) - \(contentOffset.y)")
+//        print("5 \(contentOffset.x) - \(adjustedX) - \(section)")
         return date(forSection: section)
     }
     
