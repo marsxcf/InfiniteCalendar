@@ -87,7 +87,7 @@ public extension ICDefaultComponent {
         public var body: some View {
             ZStack {
                 item.color
-            }.shadow(color: Color.black.opacity(0.25), radius: 1.0, x: 0.0, y: 3.0)
+            }.shadow(color: Color.black.opacity(0.1), radius: 1.0, x: 0.0, y: 3.0)
         }
     }
 }

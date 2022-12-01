@@ -22,7 +22,7 @@ open class ICViewFlowLayout<Settings: ICSettings>: UICollectionViewFlowLayout {
     open var isStickeyDateHeader: Bool { return true }
     
     // UI params default
-    open var defaultDateHeaderHeight: CGFloat { return 64.0 }
+    open var defaultDateHeaderHeight: CGFloat { return 52.0 }
     open var defaultHourHeight: CGFloat { return 56.0 }
     open var defaultTimeHeaderWidth: CGFloat { return 64.0 }
     open var defaultGridThickness: CGFloat { return 1.0 }
